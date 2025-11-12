@@ -22,7 +22,7 @@
   },
   "peerDependencies": {
     "atomous": "workspace:*",
-    "solid-js": "^1.9.9"
+    "solid-js": "^1.5.0 || ^2"
   },
   "devDependencies": {
     "@atomous/eslint-config": "workspace:*",

@@ -22,7 +22,7 @@
   },
   "peerDependencies": {
     "atomous": "workspace:*",
-    "vue": "^3.5.18"
+    "vue": "^2.7.0 || ^3.2.0"
   },
   "devDependencies": {
     "@atomous/eslint-config": "workspace:*",
