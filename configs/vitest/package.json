@@ -1,0 +1,14 @@
+{
+  "name": "@atomous/vitest-config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./lib/index.mjs"
+  },
+  "dependencies": {
+    "vitest": "^4.0.8"
+  },
+  "devDependencies": {
+    "@total-typescript/tsconfig": "^1.0.4"
+  }
+}

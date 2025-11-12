@@ -1,0 +1,51 @@
+{
+  "name": "@atomous/react",
+  "type": "module",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "@atomous/source": "./src/index.ts",
+      "types": "./dist/index.d.cts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "zshy"
+  },
+  "peerDependencies": {
+    "atomous": "workspace:*",
+    "react": "^19.1.1"
+  },
+  "devDependencies": {
+    "@atomous/eslint-config": "workspace:*",
+    "@atomous/typescript-config": "workspace:*",
+    "@eslint-react/eslint-plugin": "^2.3.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@total-typescript/tsconfig": "^1.0.4",
+    "@types/react": "^19.2.2",
+    "atomous": "workspace:*",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "vitest": "^4.0.8",
+    "zshy": "^0.4.4"
+  },
+  "zshy": {
+    "exports": {
+      ".": "./src/index.ts"
+    },
+    "conditions": {
+      "@atomous/source": "src"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "extends": ["@total-typescript/tsconfig/bundler/no-dom/library", "@atomous/typescript-config/base"],
+  "include": ["./*.mjs", "./src"]
+}

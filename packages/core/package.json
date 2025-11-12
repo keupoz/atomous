@@ -1,0 +1,43 @@
+{
+  "name": "atomous",
+  "type": "module",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keupoz/atomous.git",
+    "directory": "packages/core"
+  },
+  "exports": {
+    ".": {
+      "@atomous/source": "./src/index.ts",
+      "types": "./dist/index.d.cts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "zshy"
+  },
+  "devDependencies": {
+    "@atomous/typescript-config": "workspace:*",
+    "@total-typescript/tsconfig": "^1.0.4",
+    "@types/node": "^24.10.0",
+    "vitest": "^4.0.8",
+    "zshy": "^0.4.4"
+  },
+  "zshy": {
+    "exports": {
+      ".": "./src/index.ts"
+    },
+    "conditions": {
+      "@atomous/source": "src"
+    }
+  }
+}

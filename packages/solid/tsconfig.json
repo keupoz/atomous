@@ -1,0 +1,8 @@
+{
+  "extends": ["@total-typescript/tsconfig/bundler/no-dom/library", "@atomous/typescript-config/base"],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js"
+  },
+  "include": ["./*.mjs", "./src"]
+}

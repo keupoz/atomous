@@ -1,0 +1,8 @@
+{
+  "name": "@atomous/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./base": "./tsconfig.base.json"
+  }
+}

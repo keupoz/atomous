@@ -1,0 +1,22 @@
+{
+  "name": "@atomous/svelte",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "peerDependencies": {
+    "atomous": "workspace:*",
+    "svelte": "^5.38.6"
+  },
+  "devDependencies": {
+    "@atomous/eslint-config": "workspace:*",
+    "@atomous/typescript-config": "workspace:*",
+    "@sveltejs/vite-plugin-svelte": "^6.2.1",
+    "@testing-library/svelte": "^5.2.8",
+    "@testing-library/user-event": "^14.6.1",
+    "@total-typescript/tsconfig": "^1.0.4",
+    "atomous": "workspace:*",
+    "eslint-plugin-svelte": "^3.13.0",
+    "svelte": "^5.43.4",
+    "vitest": "^4.0.8"
+  }
+}

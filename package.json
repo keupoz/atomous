@@ -1,0 +1,24 @@
+{
+  "name": "@atomous/root",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.20.0",
+  "scripts": {
+    "dev": "vitest --ui --coverage",
+    "test": "vitest --run",
+    "lint": "eslint .",
+    "build": "pnpm -r run build"
+  },
+  "devDependencies": {
+    "@atomous/eslint-config": "workspace:*",
+    "@atomous/vitest-config": "workspace:*",
+    "@changesets/cli": "^2.29.7",
+    "@types/jsdom": "^27.0.0",
+    "@vitest/coverage-v8": "^4.0.8",
+    "@vitest/ui": "^4.0.8",
+    "eslint": "^9.39.1",
+    "jsdom": "^27.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.8"
+  }
+}
