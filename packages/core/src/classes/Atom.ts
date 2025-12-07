@@ -96,10 +96,12 @@ export abstract class Atom<TValue> implements AtomSource {
 
   /** Call listeners with the current value. */
   private dispatch() {
-    const value = this.read()
+    if (this.listeners.size) {
+      const value = this.read()
 
-    for (const listener of this.listeners) {
-      listener(value)
+      for (const listener of this.listeners) {
+        listener(value)
+      }
     }
 
     this.dispatching = false

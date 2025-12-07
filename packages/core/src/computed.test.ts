@@ -40,9 +40,12 @@ it('only computes on demand', () => {
 
   expect(called).toBe(false)
 
-  $greeting.subscribe(() => {})
-
+  $greeting.get()
   expect(called).toBe(true)
+
+  called = false
+  $greeting.reset()
+  expect(called).toBe(false)
 })
 
 describe('test complex graph', () => {
