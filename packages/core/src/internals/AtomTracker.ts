@@ -1,3 +1,5 @@
+import type { Atom } from '../classes/Atom'
+
 export interface AtomSource {
   addConsumer: (consumer: AtomConsumer) => void
   removeConsumer: (consumer: AtomConsumer) => void
@@ -7,6 +9,9 @@ export interface AtomConsumer {
   reset: () => void
 }
 
+export type ComputationGetter = <TValue>(atom: Atom<TValue>) => TValue
+export type Computation<TResult> = (get: ComputationGetter, signal: AbortSignal) => TResult
+
 export class AtomTracker {
   private static current?: AtomTracker
 
@@ -15,13 +20,14 @@ export class AtomTracker {
     this.current?.track(source)
   }
 
+  private readonly consumer: AtomConsumer
   private readonly sources = new Set<AtomSource>()
   private running = false
 
-  private readonly consumer: AtomConsumer
-
   constructor(consumer: AtomConsumer) {
     this.consumer = consumer
+
+    this.get = this.get.bind(this)
   }
 
   /** Start tracking the source. */
@@ -45,8 +51,14 @@ export class AtomTracker {
     this.sources.clear()
   }
 
+  /** Track the atom and get its value. */
+  private get<TValue>(atom: Atom<TValue>) {
+    this.track(atom)
+    return atom.get()
+  }
+
   /** Run a function and return the result keeping track of dependencies. */
-  public run<TParameters extends unknown[], TResult>(fn: (...args: TParameters) => TResult, ...args: TParameters) {
+  public run<TResult>(compute: Computation<TResult>, signal: AbortSignal) {
     if (this.running) throw new Error('Recursion detected')
 
     const prevTracker = AtomTracker.current
@@ -56,7 +68,7 @@ export class AtomTracker {
     this.running = true
 
     try {
-      return fn(...args)
+      return compute(this.get, signal)
     } finally {
       AtomTracker.current = prevTracker
       this.running = false

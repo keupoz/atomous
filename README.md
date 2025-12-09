@@ -110,6 +110,29 @@ $double.subscribe((double) => {
 $count.update(count => count + 1) // $double will be updated
 ```
 
+##### Computed promises
+
+> Added in `0.2.0`
+
+Computed atoms provide a get helper and an abort signal to the computation callback. These can be used to compute promises.
+
+```typescript
+import { computed } from 'atomous'
+
+const $userId = computed((get, signal) => {
+  return fetchJson('/api/users/current', { signal })
+})
+
+const $userPosts = computed(async (get, signal) => {
+  const userId = await get($userId)
+  const posts = await fetchJson(`/api/users/${userId}`, { signal })
+
+  return posts
+})
+```
+
+##### Explicitly setting value
+
 Computed atoms support setting their value explicitly. It will be replaced with the new computed value when triggered.
 
 ```typescript

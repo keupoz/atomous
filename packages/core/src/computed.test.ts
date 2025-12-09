@@ -48,6 +48,24 @@ it('only computes on demand', () => {
   expect(called).toBe(false)
 })
 
+it('correctly aborts signal on reset', () => {
+  let lastSignal: AbortSignal | undefined
+
+  const $signal = computed((get, signal) => {
+    lastSignal = signal
+    return signal
+  })
+
+  expect($signal.get()).toBe(lastSignal)
+  expect(lastSignal?.aborted).toBe(false)
+
+  $signal.reset()
+  expect(lastSignal?.aborted).toBe(true)
+
+  expect($signal.get()).toBe(lastSignal)
+  expect(lastSignal?.aborted).toBe(false)
+})
+
 describe('test complex graph', () => {
   let computations = 0
 
@@ -188,6 +206,54 @@ it('correctly handles dynamic dependencies', () => {
 
   $middleName.set('H')
   expect($fullName.get()).toBe('John H Doe')
+  expect(computations).toBe(++expectedComputations)
+})
+
+// Basically the same as the previous one
+it('correctly tracks dependencies in promise using get helper', async () => {
+  function asyncValue<T>(value: T) {
+    return new Promise<T>(resolve => setTimeout(() => resolve(value), 1))
+  }
+
+  let computations = 0
+
+  const $firstName = atom(asyncValue('John'))
+  // make one dependency immediately resolved
+  const $lastName = atom(Promise.resolve('Doe'))
+  const $middleName = atom(asyncValue('M'))
+
+  const $enableMiddleName = atom(true)
+
+  const $fullName = computed(async (get) => {
+    computations++
+
+    let result = await get($firstName)
+
+    if (get($enableMiddleName)) {
+      result += ` ${await get($middleName)}`
+    }
+
+    result += ` ${await get($lastName)}`
+
+    return result
+  })
+
+  let expectedComputations = 0
+
+  $enableMiddleName.set(false)
+  expect(await $fullName.get()).toBe('John Doe')
+  expect(computations).toBe(++expectedComputations)
+
+  $middleName.set(asyncValue('W'))
+  expect(await $fullName.get()).toBe('John Doe')
+  expect(computations).toBe(expectedComputations)
+
+  $enableMiddleName.set(true)
+  expect(await $fullName.get()).toBe('John W Doe')
+  expect(computations).toBe(++expectedComputations)
+
+  $middleName.set(asyncValue('H'))
+  expect(await $fullName.get()).toBe('John H Doe')
   expect(computations).toBe(++expectedComputations)
 })
 
