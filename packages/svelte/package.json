@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "private": true,
   "peerDependencies": {
-    "atomous": "workspace:*",
+    "atomous": ">=0.1.0",
     "svelte": "^5.38.6"
   },
   "devDependencies": {

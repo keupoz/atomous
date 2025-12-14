@@ -26,7 +26,7 @@
     "build": "zshy"
   },
   "peerDependencies": {
-    "atomous": "workspace:*"
+    "atomous": ">=0.1.0"
   },
   "dependencies": {
     "@standard-schema/spec": "^1.0.0"

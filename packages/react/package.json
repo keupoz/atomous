@@ -26,7 +26,7 @@
     "build": "zshy"
   },
   "peerDependencies": {
-    "atomous": "workspace:*",
+    "atomous": ">=0.1.0",
     "react": "^18 || ^19"
   },
   "devDependencies": {
