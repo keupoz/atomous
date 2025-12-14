@@ -33,6 +33,7 @@ function cleanupState<TData>(cleanup: ValueCleanup<TData>, state: AsyncState<TDa
   if ('data' in state) cleanup(state.data)
 }
 
+/** @deprecated since 0.2.0, use `LoadableAtom` instead */
 export class AsyncAtom<TSource, TData> extends Atom<AsyncState<TData>> implements AtomConsumer {
   private readonly tracker?: AtomTracker
   private readonly source: Atom<TSource> | TSource

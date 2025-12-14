@@ -155,6 +155,8 @@ $fullName.reset()
 
 #### Async atom
 
+> Deprecated since `0.2.0`
+
 This atom is similar to computed atom but is designed for asynchronous data loading.
 
 - **Function**: `asyncAtom(<source>, <load>, [options])`
@@ -180,6 +182,37 @@ $postData.get() // { status: "success", data: { /* data */ } }
 
 // Abort current loading
 $postData.abort()
+```
+
+#### Loadable atom
+
+> Added in `0.2.0`
+
+Simple atom that returns a descriptive state of the source promise. Accepts an atom that returns a promise.
+
+```typescript
+import { computed, loadable } from 'atomous'
+
+const $userId = computed((get, signal) => {
+  return fetchJson('/api/users/current', { signal })
+})
+
+const $userPosts = computed(async (get, signal) => {
+  const userId = await get($userId)
+  const posts = await fetchJson(`/api/users/${userId}`, { signal })
+
+  return posts
+})
+
+const $userPostsState = loadable($userPosts)
+
+$userPostsState.subscribe((state) => {
+  switch (state.status) {
+    case 'loading': return console.log('Loading ...')
+    case 'error': return console.error(state.error)
+    case 'success': return console.log('Posts loaded.', state.value)
+  }
+})
 ```
 
 #### Value options

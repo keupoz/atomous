@@ -3,6 +3,7 @@ import { AsyncAtom } from './classes/AsyncAtom'
 /**
  * Create an async atom. Accepts an atom or a plain value as a source, and a fetcher function to load the data.
  *
+ * @deprecated since 0.2.0, use `loadable` atom instead
  * @example
  * const $userId = atom(1)
  * const $user = asyncAtom($userId, (userId, signal) => {
