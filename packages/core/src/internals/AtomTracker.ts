@@ -26,8 +26,6 @@ export class AtomTracker {
 
   constructor(consumer: AtomConsumer) {
     this.consumer = consumer
-
-    this.get = this.get.bind(this)
   }
 
   /** Start tracking the source. */
@@ -51,26 +49,32 @@ export class AtomTracker {
     this.sources.clear()
   }
 
-  /** Track the atom and get its value. */
-  private get<TValue>(atom: Atom<TValue>) {
-    this.track(atom)
-    return atom.get()
+  private runTracked<TResult>(fn: () => TResult) {
+    const prevTracker = AtomTracker.current
+    AtomTracker.current = this
+
+    try {
+      return fn()
+    } finally {
+      AtomTracker.current = prevTracker
+    }
   }
 
   /** Run a function and return the result keeping track of dependencies. */
   public run<TResult>(compute: Computation<TResult>, signal: AbortSignal) {
     if (this.running) throw new Error('Recursion detected')
 
-    const prevTracker = AtomTracker.current
-    AtomTracker.current = this
-
     this.dispose()
     this.running = true
 
+    const get: ComputationGetter = (atom) => {
+      if (signal.aborted) throw new Error('AtomTracker: Accessing atom value after abort.')
+      return this.runTracked(() => atom.get())
+    }
+
     try {
-      return compute(this.get, signal)
+      return this.runTracked(() => compute(get, signal))
     } finally {
-      AtomTracker.current = prevTracker
       this.running = false
     }
   }
