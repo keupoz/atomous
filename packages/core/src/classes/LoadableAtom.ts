@@ -4,30 +4,33 @@ import { AtomBatch } from '../internals/AtomBatch'
 import { AtomTracker } from '../internals/AtomTracker'
 import { Atom } from './Atom'
 
-export interface LoadableStateLoading {
+export interface LoadableStateLoading<TValue> {
   status: 'loading'
+  value?: TValue
+  error?: undefined
 }
 
 export interface LoadableStateSuccess<TValue> {
   status: 'success'
   value: TValue
+  error?: undefined
 }
 
-export interface LoadableStateError {
+export interface LoadableStateError<TValue> {
   status: 'error'
+  value?: TValue
   error: unknown
 }
 
-export type LoadableState<TValue> = LoadableStateLoading | LoadableStateSuccess<TValue> | LoadableStateError
+export type LoadableState<TValue> = LoadableStateLoading<TValue> | LoadableStateSuccess<TValue> | LoadableStateError<TValue>
 
 function compareState<TValue>(compare: ValueCompare<TValue>, a: LoadableState<TValue>, b: LoadableState<TValue>) {
-  return a.status === b.status && 'value' in a && 'value' in b && compare(a.value, b.value)
+  return Object.is(a, b) || (a.status === b.status && !(a.value === undefined || b.value === undefined) && compare(a.value, b.value))
 }
 
 function cleanupState<TValue>(cleanup: ValueCleanup<TValue>, oldState: LoadableState<TValue>, newState: LoadableState<TValue> | undefined) {
-  if ('value' in oldState) {
-    const newValue = newState && 'value' in newState ? newState.value : undefined
-    cleanup(oldState.value, newValue)
+  if (newState?.status === 'success' && oldState.value !== undefined) {
+    cleanup(oldState.value, newState.value)
   }
 }
 
@@ -36,6 +39,7 @@ export class LoadableAtom<TValue> extends Atom<LoadableState<TValue>> implements
   private readonly tracker = new AtomTracker(this)
 
   private controller?: AbortController
+  private oldValue?: TValue
 
   constructor(source: Atom<Promise<TValue>>, options?: ValueOptions<TValue>) {
     super(options && {
@@ -56,7 +60,7 @@ export class LoadableAtom<TValue> extends Atom<LoadableState<TValue>> implements
 
   protected override createValue(): LoadableState<TValue> {
     this.init()
-    return { status: 'loading' }
+    return { status: 'loading', value: this.oldValue }
   }
 
   private async init() {
@@ -67,12 +71,13 @@ export class LoadableAtom<TValue> extends Atom<LoadableState<TValue>> implements
 
       if (signal.aborted) return
 
+      this.oldValue = value
       this.set({ status: 'success', value })
     } catch (error) {
       if (signal.aborted) return
 
       console.error('LoadableAtom: Source promise rejected.', error)
-      this.set({ status: 'error', error })
+      this.set({ status: 'error', error, value: this.oldValue })
     }
   }
 

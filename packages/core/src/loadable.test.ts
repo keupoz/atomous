@@ -34,13 +34,47 @@ it('returns the correct state of the promise', async () => {
 
   $promise.set(asyncError())
   await resolve()
-  expect($state.get()).toEqual({ status: 'error', error: new Error('Test error') })
+  expect($state.get()).toEqual({ status: 'error', value: 'value', error: new Error('Test error') })
 
   expect(log).toEqual([
     { status: 'loading' },
     { status: 'success', value: 'value' },
+    { status: 'loading', value: 'value' },
+    { status: 'error', value: 'value', error: new Error('Test error') },
+  ])
+})
+
+it('correctly stores previously available value', async () => {
+  const $promise = atom(asyncValue('initial'))
+  const $state = loadable($promise)
+
+  const log: LoadableState<string>[] = []
+  $state.subscribe(state => log.push(state))
+
+  expect($state.get().value).toBe(undefined)
+
+  await resolve()
+  expect($state.get().value).toBe('initial')
+
+  $promise.set(asyncValue('new'))
+  expect($state.get().value).toBe('initial')
+
+  await resolve()
+  expect($state.get().value).toBe('new')
+
+  $promise.set(asyncError())
+  expect($state.get().value).toBe('new')
+
+  await resolve()
+  expect($state.get().value).toBe('new')
+
+  expect(log).toEqual([
     { status: 'loading' },
-    { status: 'error', error: new Error('Test error') },
+    { status: 'success', value: 'initial' },
+    { status: 'loading', value: 'initial' },
+    { status: 'success', value: 'new' },
+    { status: 'loading', value: 'new' },
+    { status: 'error', value: 'new', error: new Error('Test error') },
   ])
 })
 
