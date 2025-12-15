@@ -33,10 +33,10 @@ it('correctly handles custom compare', () => {
 })
 
 it('correctly calls cleanup', () => {
-  const log: string[] = []
+  const log: [string, string | undefined][] = []
   const $atom = atom('initial', {
-    cleanup(value) {
-      log.push(value)
+    cleanup(oldValue, newValue) {
+      log.push([oldValue, newValue])
     },
   })
 
@@ -46,7 +46,12 @@ it('correctly calls cleanup', () => {
 
   $atom.reset()
 
-  expect(log).toEqual(['initial', 'first', 'second', 'third'])
+  expect(log).toEqual([
+    ['initial', 'first'],
+    ['first', 'second'],
+    ['second', 'third'],
+    ['third', undefined],
+  ])
 })
 
 it('correctly calls subscribers', () => {

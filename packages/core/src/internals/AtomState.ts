@@ -1,7 +1,7 @@
 export type ValueCreate<TValue> = () => TValue
 
 export type ValueCompare<TValue> = (a: TValue, b: TValue) => boolean
-export type ValueCleanup<TValue> = (value: TValue) => void
+export type ValueCleanup<TValue> = (oldValue: TValue, newValue: TValue | undefined) => void
 
 export interface ValueOptions<TValue> {
   /** Function for comparing the old and the new value. Default is `Object.is`. */
@@ -39,7 +39,7 @@ export class AtomState<TValue> {
   public set(state: StateRef<TValue> | undefined) {
     if (this.state) {
       if (state && this.compare(this.state.value, state.value)) return false
-      this.cleanup?.(this.state.value)
+      this.cleanup?.(this.state.value, state?.value)
     }
 
     this.state = state

@@ -29,8 +29,11 @@ function compareState<TData>(compare: ValueCompare<TData>, a: AsyncState<TData>,
   return a.status === b.status && 'data' in a && 'data' in b && compare(a.data, b.data)
 }
 
-function cleanupState<TData>(cleanup: ValueCleanup<TData>, state: AsyncState<TData>) {
-  if ('data' in state) cleanup(state.data)
+function cleanupState<TData>(cleanup: ValueCleanup<TData>, oldState: AsyncState<TData>, newState: AsyncState<TData> | undefined) {
+  if ('data' in oldState) {
+    const newData = newState && 'data' in newState ? newState.data : undefined
+    cleanup(oldState.data, newData)
+  }
 }
 
 /** @deprecated since 0.2.0, use `LoadableAtom` instead */

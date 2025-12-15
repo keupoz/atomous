@@ -24,8 +24,11 @@ function compareState<TValue>(compare: ValueCompare<TValue>, a: LoadableState<TV
   return a.status === b.status && 'value' in a && 'value' in b && compare(a.value, b.value)
 }
 
-function cleanupState<TValue>(cleanup: ValueCleanup<TValue>, state: LoadableState<TValue>) {
-  if ('value' in state) cleanup(state.value)
+function cleanupState<TValue>(cleanup: ValueCleanup<TValue>, oldState: LoadableState<TValue>, newState: LoadableState<TValue> | undefined) {
+  if ('value' in oldState) {
+    const newValue = newState && 'value' in newState ? newState.value : undefined
+    cleanup(oldState.value, newValue)
+  }
 }
 
 export class LoadableAtom<TValue> extends Atom<LoadableState<TValue>> implements AtomConsumer {
