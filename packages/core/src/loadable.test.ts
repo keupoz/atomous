@@ -26,6 +26,9 @@ it('returns the correct state of the promise', async () => {
 
   expect($state.get()).toEqual({ status: 'loading' })
 
+  // Test duplicate loading state change
+  $state.reset()
+
   await resolve()
   expect($state.get()).toEqual({ status: 'success', value: 'value' })
 
