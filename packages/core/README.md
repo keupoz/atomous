@@ -48,7 +48,7 @@ increment()
 
 ### Extra atoms
 
-- **[persisted](./packages/persistent/)** - synchronises its value with provided storage (e.g. localStorage or other custom solutions)
+- **[persistent](./packages/persistent/)** - synchronises its value with provided storage (e.g. localStorage or other custom solutions)
 
 ### Integrations
 
